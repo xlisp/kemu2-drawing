@@ -1,0 +1,60 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="800" height="600" fill="#f0f0f0"/>
+    
+    <!-- 直角转弯区域 -->
+    <path d="M 100 100 L 300 100 L 300 300 L 100 300 Z" 
+          fill="none" 
+          stroke="black" 
+          stroke-width="2"/>
+    <text x="150" y="200" text-anchor="middle">直角转弯</text>
+    
+    <!-- 倒车入库区域 -->
+    <rect x="400" y="100" width="200" height="150" 
+          fill="none" 
+          stroke="black" 
+          stroke-width="2"/>
+    <text x="500" y="175" text-anchor="middle">倒车入库</text>
+    
+    <!-- 侧方停车区域 -->
+    <rect x="100" y="400" width="250" height="100" 
+          fill="none" 
+          stroke="black" 
+          stroke-width="2"/>
+    <text x="225" y="450" text-anchor="middle">侧方停车</text>
+    
+    <!-- 坡道定点停车和起步区域 -->
+    <path d="M 400 400 L 600 350 L 600 450 L 400 500 Z" 
+          fill="none" 
+          stroke="black" 
+          stroke-width="2"/>
+    <text x="500" y="425" text-anchor="middle">坡道定点停车和起步</text>
+    
+    <!-- 箭头指示方向 -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="blue"/>
+        </marker>
+    </defs>
+    
+    <path d="M 300 200 L 380 200" 
+          stroke="blue" 
+          stroke-width="2" 
+          marker-end="url(#arrowhead)"/>
+    <path d="M 500 250 L 500 350" 
+          stroke="blue" 
+          stroke-width="2" 
+          marker-end="url(#arrowhead)"/>
+    <path d="M 350 450 L 380 450" 
+          stroke="blue" 
+          stroke-width="2" 
+          marker-end="url(#arrowhead)"/>
+    
+    <!-- 起点和终点标记 -->
+    <circle cx="50" cy="200" r="10" fill="green"/>
+    <text x="50" y="230" text-anchor="middle">起点</text>
+    
+    <circle cx="650" cy="400" r="10" fill="red"/>
+    <text x="650" y="430" text-anchor="middle">终点</text>
+</svg>
