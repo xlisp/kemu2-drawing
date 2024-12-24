@@ -284,7 +284,7 @@ void update(int value) {
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'w':
-            gameState.speed = 0.5f;
+            gameState.speed = 0.1f; // 0.5f is very fast
             break;
         case 's':
             gameState.speed = -0.5f;
