@@ -191,32 +191,8 @@ void drawRoad() {
     glEnd();
 }
 
-// Draw the player's car
-void drawCar() {
-    glPushMatrix();
-    glTranslatef(gameState.carX, 1.0f, gameState.carZ);
-    glRotatef(gameState.carRotation * 180.0f / M_PI, 0.0f, 1.0f, 0.0f);
-    
-    // Car body
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glPushMatrix();
-    glScalef(1.0f, 0.5f, 2.0f);
-    glutSolidCube(1.0f);
-    glPopMatrix();
-    
-    // Car top
-    glColor3f(0.8f, 0.0f, 0.0f);
-    glPushMatrix();
-    glTranslatef(0.0f, 0.4f, 0.0f);
-    glScalef(0.8f, 0.4f, 1.2f);
-    glutSolidCube(1.0f);
-    glPopMatrix();
-    
-    glPopMatrix();
-}
-
 // Rest of the functions remain the same as in the previous version
-void drawMirrors() {
+void drawMirrorsx() {
     if (gameState.carZ > S_CURVE_START && gameState.carZ < S_CURVE_END) {
         // Left mirror viewport
         glViewport(0, 400, 200, 150);
@@ -229,6 +205,203 @@ void drawMirrors() {
         // Reset main viewport
         glViewport(0, 0, 800, 600);
     }
+}
+
+// [Previous includes and game state code remain the same until drawCar() function]
+
+void drawTire(float x, float y, float z) {
+    glPushMatrix();
+    glTranslatef(x, y, z);
+
+    // Tire rubber (black)
+    glColor3f(0.1f, 0.1f, 0.1f);
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glutSolidTorus(0.1f, 0.2f, 20, 20);
+    glPopMatrix();
+
+    // Wheel rim (silver)
+    glColor3f(0.8f, 0.8f, 0.8f);
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glScalef(1.0f, 1.0f, 0.1f);
+    glutSolidCube(0.3f);
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
+void drawWindows() {
+    // Windshield
+    glColor4f(0.3f, 0.3f, 0.8f, 0.8f);  // Blue tinted glass
+    glBegin(GL_QUADS);
+    glVertex3f(-0.4f, 0.5f, 0.5f);
+    glVertex3f(0.4f, 0.5f, 0.5f);
+    glVertex3f(0.4f, 0.9f, 0.2f);
+    glVertex3f(-0.4f, 0.9f, 0.2f);
+    glEnd();
+
+    // Rear window
+    glBegin(GL_QUADS);
+    glVertex3f(-0.4f, 0.5f, -0.5f);
+    glVertex3f(0.4f, 0.5f, -0.5f);
+    glVertex3f(0.4f, 0.9f, -0.2f);
+    glVertex3f(-0.4f, 0.9f, -0.2f);
+    glEnd();
+
+    // Side windows
+    glBegin(GL_QUADS);
+    // Left side
+    glVertex3f(-0.41f, 0.5f, 0.5f);
+    glVertex3f(-0.41f, 0.5f, -0.5f);
+    glVertex3f(-0.41f, 0.9f, -0.2f);
+    glVertex3f(-0.41f, 0.9f, 0.2f);
+
+    // Right side
+    glVertex3f(0.41f, 0.5f, 0.5f);
+    glVertex3f(0.41f, 0.5f, -0.5f);
+    glVertex3f(0.41f, 0.9f, -0.2f);
+    glVertex3f(0.41f, 0.9f, 0.2f);
+    glEnd();
+}
+
+void drawHeadlights() {
+    // Front headlights
+    glColor3f(1.0f, 1.0f, 0.9f);
+    glPushMatrix();
+    glTranslatef(0.3f, 0.3f, 0.95f);
+    glScalef(0.2f, 0.2f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-0.3f, 0.3f, 0.95f);
+    glScalef(0.2f, 0.2f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Rear lights
+    glColor3f(0.8f, 0.0f, 0.0f);
+    glPushMatrix();
+    glTranslatef(0.3f, 0.3f, -0.95f);
+    glScalef(0.2f, 0.2f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-0.3f, 0.3f, -0.95f);
+    glScalef(0.2f, 0.2f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+}
+
+void drawCarBody() {
+    // Main body
+    glColor3f(1.0f, 0.0f, 0.0f);  // Red color
+
+    // Lower body
+    glPushMatrix();
+    glScalef(0.8f, 0.4f, 2.0f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Upper body (roof)
+    glPushMatrix();
+    glTranslatef(0.0f, 0.4f, 0.0f);
+    glScalef(0.7f, 0.3f, 1.2f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Hood
+    glBegin(GL_QUADS);
+    glVertex3f(-0.4f, 0.2f, 1.0f);
+    glVertex3f(0.4f, 0.2f, 1.0f);
+    glVertex3f(0.4f, 0.4f, 0.5f);
+    glVertex3f(-0.4f, 0.4f, 0.5f);
+    glEnd();
+
+    // Trunk
+    glBegin(GL_QUADS);
+    glVertex3f(-0.4f, 0.2f, -1.0f);
+    glVertex3f(0.4f, 0.2f, -1.0f);
+    glVertex3f(0.4f, 0.4f, -0.5f);
+    glVertex3f(-0.4f, 0.4f, -0.5f);
+    glEnd();
+}
+
+void drawGrille() {
+    // Front grille
+    glColor3f(0.2f, 0.2f, 0.2f);
+    glPushMatrix();
+    glTranslatef(0.0f, 0.3f, 0.99f);
+    glScalef(0.4f, 0.2f, 0.01f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Grille details
+    glColor3f(0.7f, 0.7f, 0.7f);
+    for(float x = -0.15f; x <= 0.15f; x += 0.05f) {
+        glBegin(GL_LINES);
+        glVertex3f(x, 0.2f, 0.991f);
+        glVertex3f(x, 0.4f, 0.991f);
+        glEnd();
+    }
+}
+
+
+void drawMirrors() {
+    if (gameState.carZ > S_CURVE_START && gameState.carZ < S_CURVE_END) {
+        // Left mirror viewport
+        glViewport(0, 400, 200, 150);
+        renderMirrorView(true);
+
+        // Right mirror viewport
+        glViewport(600, 400, 200, 150);
+        renderMirrorView(false);
+
+        // Reset main viewport
+        glViewport(0, 0, 800, 600);
+    }
+}
+
+void drawMirrorsxxxx() {
+    // Side mirrors
+    glColor3f(1.0f, 0.0f, 0.0f);  // Match car color
+
+    // Left mirror
+    glPushMatrix();
+    glTranslatef(-0.45f, 0.5f, 0.3f);
+    glScalef(0.1f, 0.15f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Right mirror
+    glPushMatrix();
+    glTranslatef(0.45f, 0.5f, 0.3f);
+    glScalef(0.1f, 0.15f, 0.1f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+}
+
+void drawCar() {
+    glPushMatrix();
+    glTranslatef(gameState.carX, 0.4f, gameState.carZ);  // Adjusted height
+    glRotatef(gameState.carRotation * 180.0f / M_PI, 0.0f, 1.0f, 0.0f);
+
+    // Draw all car components
+    drawCarBody();
+    drawWindows();
+    drawHeadlights();
+    drawGrille();
+    //drawMirrors();
+
+    // Draw tires
+    drawTire(0.4f, 0.2f, 0.6f);   // Front right
+    drawTire(-0.4f, 0.2f, 0.6f);  // Front left
+    drawTire(0.4f, 0.2f, -0.6f);  // Rear right
+    drawTire(-0.4f, 0.2f, -0.6f); // Rear left
+
+    glPopMatrix();
 }
 
 void renderMirrorView(bool isLeft) {
