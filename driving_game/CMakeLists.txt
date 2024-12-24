@@ -12,6 +12,9 @@ add_executable(driving_game driving_game.cpp)
 target_link_libraries(driving_game
     ${OPENGL_LIBRARIES}
     ${GLUT_LIBRARIES}
+    GL
+    GLU
+    glut
 )
 
 # Include directories
@@ -25,3 +28,4 @@ set_target_properties(driving_game PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
+
