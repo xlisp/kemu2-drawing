@@ -1,3 +1,5 @@
+![](./3d_driving.png)
+
 I'll help you set up and run the game on macOS. First, you'll need to install the necessary dependencies and compile the code.
 
 1. First, install the required tools using Homebrew. If you don't have Homebrew installed, install it by running:
