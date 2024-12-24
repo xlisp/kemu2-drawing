@@ -18,6 +18,8 @@ const float ROAD_WIDTH = 10.0f;
 const float ROAD_LENGTH = 100.0f;
 const float S_CURVE_START = 20.0f;
 const float S_CURVE_END = 60.0f;
+const float LANE_MARKING_LENGTH = 3.0f;  // Length of each yellow line
+const float LANE_MARKING_GAP = 2.0f;     // Gap between yellow lines
 
 // Camera parameters
 float cameraDistance = 5.0f;
@@ -33,6 +35,7 @@ void drawCar();
 void drawMirrors();
 bool checkCollision();
 void renderMirrorView(bool isLeft);
+void drawRoadMarkings(float xOffset, float z);
 
 // Initialize OpenGL
 void init() {
@@ -63,52 +66,28 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-// Display function
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
+// Draw road markings
+void drawRoadMarkings(float xOffset, float z) {
+    // Draw center yellow lines (dashed)
+    glColor3f(1.0f, 1.0f, 0.0f);  // Yellow color
     
-    // Set up main camera
-    gluLookAt(gameState.carX - cameraDistance * sin(gameState.carRotation),
-              cameraHeight,
-              gameState.carZ - cameraDistance * cos(gameState.carRotation),
-              gameState.carX,
-              1.0f,
-              gameState.carZ,
-              0.0f,
-              1.0f,
-              0.0f);
+    float totalLength = LANE_MARKING_LENGTH + LANE_MARKING_GAP;
+    float lineStart = fmod(z, totalLength);
     
-    // Draw main scene
-    drawRoad();
-    drawCar();
-    drawMirrors();
-    
-    // Draw score
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, 800, 0, 600);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glRasterPos2i(10, 580);
-    std::string score = "Score: " + std::to_string(gameState.score);
-    for (char c : score) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+    if (lineStart < LANE_MARKING_LENGTH) {
+        glBegin(GL_QUADS);
+        glVertex3f(xOffset - 0.15f, 0.01f, z);
+        glVertex3f(xOffset + 0.15f, 0.01f, z);
+        glVertex3f(xOffset + 0.15f, 0.01f, z + std::min(LANE_MARKING_LENGTH - lineStart, 1.0f));
+        glVertex3f(xOffset - 0.15f, 0.01f, z + std::min(LANE_MARKING_LENGTH - lineStart, 1.0f));
+        glEnd();
     }
-    
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    
-    glutSwapBuffers();
 }
 
 // Draw the S-curve road
 void drawRoad() {
-    glColor3f(0.5f, 0.5f, 0.5f);
+    // Draw road surface
+    glColor3f(0.3f, 0.3f, 0.3f);  // Darker gray for asphalt
     
     glBegin(GL_QUADS);
     for (float z = 0; z < ROAD_LENGTH; z += 1.0f) {
@@ -124,7 +103,7 @@ void drawRoad() {
     }
     glEnd();
     
-    // Draw road boundaries
+    // Draw road boundaries (white lines)
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     for (float z = 0; z < ROAD_LENGTH; z += 1.0f) {
@@ -133,13 +112,22 @@ void drawRoad() {
             xOffset = 10.0f * sin((z - S_CURVE_START) * M_PI / (S_CURVE_END - S_CURVE_START));
         }
         
-        glVertex3f(xOffset - ROAD_WIDTH/2, 0.1f, z);
-        glVertex3f(xOffset - ROAD_WIDTH/2, 0.1f, z + 1.0f);
+        glVertex3f(xOffset - ROAD_WIDTH/2, 0.01f, z);
+        glVertex3f(xOffset - ROAD_WIDTH/2, 0.01f, z + 1.0f);
         
-        glVertex3f(xOffset + ROAD_WIDTH/2, 0.1f, z);
-        glVertex3f(xOffset + ROAD_WIDTH/2, 0.1f, z + 1.0f);
+        glVertex3f(xOffset + ROAD_WIDTH/2, 0.01f, z);
+        glVertex3f(xOffset + ROAD_WIDTH/2, 0.01f, z + 1.0f);
     }
     glEnd();
+    
+    // Draw yellow center lines
+    for (float z = 0; z < ROAD_LENGTH; z += 1.0f) {
+        float xOffset = 0.0f;
+        if (z > S_CURVE_START && z < S_CURVE_END) {
+            xOffset = 10.0f * sin((z - S_CURVE_START) * M_PI / (S_CURVE_END - S_CURVE_START));
+        }
+        drawRoadMarkings(xOffset, z);
+    }
 }
 
 // Draw the player's car
@@ -259,5 +247,48 @@ void reshape(int w, int h) {
     glLoadIdentity();
     gluPerspective(45.0f, (float)w/h, 0.1f, 100.0f);
     glMatrixMode(GL_MODELVIEW);
+}
+
+// Display function
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    
+    // Set up main camera
+    gluLookAt(gameState.carX - cameraDistance * sin(gameState.carRotation),
+              cameraHeight,
+              gameState.carZ - cameraDistance * cos(gameState.carRotation),
+              gameState.carX,
+              1.0f,
+              gameState.carZ,
+              0.0f,
+              1.0f,
+              0.0f);
+    
+    // Draw main scene
+    drawRoad();
+    drawCar();
+    drawMirrors();
+    
+    // Draw score
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, 800, 0, 600);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glRasterPos2i(10, 580);
+    std::string score = "Score: " + std::to_string(gameState.score);
+    for (char c : score) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+    }
+    
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    
+    glutSwapBuffers();
 }
 
